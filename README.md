@@ -1,2 +1,2 @@
-# Project_Data_Visualization
-My own solutions to the project Data Visulization countained in the book Python Crash Course by Eric Mathes.
+# Project-Data-Visualization
+My own solutions to the Data-Visualization project countained in Python Crash Course 2nd Edition book.
