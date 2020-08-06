@@ -18,54 +18,55 @@ can find links to the data in CSV format in the TXT section.
 #This file countains information about the fires in europe during last 7 days.
 #Date:28/07/2020
 
+
 import csv
-from datetime import datetime
 
 from plotly.graph_objs import Scattergeo, Layout
 from plotly import offline
+
+from datetime import datetime
+
 
 filename = 'data/MODIS_C6_Europe_7d.csv'
 
 with open(filename) as f:
     reader = csv.reader(f)
     header_row = next(reader)
-    print(header_row)
 
-    #Get latitude, longitude and brightness from this file.
-    latitudes, longitudes, brightnesses, dates = [], [], [], []
+    # Get brightnesses, lats and lons, and dates.
+    dates, brightnesses = [], []
+    latitudes, longitudes = [], []
     hover_texts = []
+
     for row in reader:
         date = datetime.strptime(row[5], '%Y-%m-%d')
-        latitude = float(row[0])
-        longitude = float(row[1])
         brightness = float(row[2])
         label = f"{date.strftime('%m/%d/%y')} - {brightness}"
+
         dates.append(date)
-        latitudes.append(latitude)
-        longitudes.append(longitude)
+        brightnesses.append(brightness)
+        latitudes.append(row[0])
+        longitudes.append(row[1])
         hover_texts.append(label)
+        
+       
 
-
-#Map the fires
+# Map the fires.
 data = [{
     'type': 'scattergeo',
-    'latitude': latitudes,
-    'longitude': longitudes,
+    'lon': longitudes,
+    'lat': latitudes,
     'text': hover_texts,
     'marker': {
         'size': [brightness/20 for brightness in brightnesses],
-        'color': brightness,
-        'colorscale': 'YlGnBu',
+        'color': brightnesses,
+        'colorscale': 'YlOrRd',
         'reversescale': True,
         'colorbar': {'title': 'Brightness'},
-
     },
-    
 }]
-my_layout = Layout(title="Recent european fire activity.")
+
+my_layout = Layout(title='European recent Fire activity')
 
 fig = {'data': data, 'layout': my_layout}
-offline.plot(fig, filename='euro_fires.html')
-
-    
-
+offline.plot(fig, filename='euro_recent_fires.html')
